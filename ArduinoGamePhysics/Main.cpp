@@ -468,6 +468,7 @@ int CGame::Run()
         CGame::WindowWidth, CGame::WindowHeight,
         CGame::ColorBitDepth, CGame::RefreshRate);
     DxLib::SetWindowSize(CGame::WindowWidth, CGame::WindowHeight);
+    DxLib::SetBackgroundColor(96, 96, 96);
     DxLib::SetMainWindowText(CGame::ApplicationName);
     DxLib::SetOutApplicationLogValidFlag(FALSE);
 
