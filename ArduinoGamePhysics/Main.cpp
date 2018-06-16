@@ -195,9 +195,11 @@ private:
     b2Fixture* mLineFixture0;               // 斜面0
     b2Fixture* mLineFixture1;               // 斜面1
 
-    b2BodyDef mCircleBodyDef;               // 球の定義情報
+    b2BodyDef mCircleBodyDef0;              // 球の定義情報0
+    b2BodyDef mCircleBodyDef1;              // 球の定義情報1
     b2CircleShape mCircleShape;             // 球の形状
-    b2FixtureDef mCircleFixtureDef;         // 球の定義情報
+    b2FixtureDef mCircleFixtureDef0;        // 球の定義情報0
+    b2FixtureDef mCircleFixtureDef1;        // 球の定義情報1
 
     int mGenerateCircleCounter;             // 球の出現カウンタ
     int mGenerateCircleCounterThreshold;    // 球の出現カウンタの閾値
@@ -245,11 +247,13 @@ CGame::CGame() :
     mLineFixtureDef1(),
     mLineFixture0(nullptr),
     mLineFixture1(nullptr),
-    mCircleBodyDef(),
+    mCircleBodyDef0(),
+    mCircleBodyDef1(),
     mCircleShape(),
-    mCircleFixtureDef(),
+    mCircleFixtureDef0(),
+    mCircleFixtureDef1(),
     mGenerateCircleCounter(0),
-    mGenerateCircleCounterThreshold(64)
+    mGenerateCircleCounterThreshold(48)
 {
 }
 
@@ -358,13 +362,22 @@ void CGame::InitializeBox2D()
     this->mLineFixture1 = this->mLineBody->CreateFixture(&this->mLineFixtureDef1);
 
     // 球の初期化
-    this->mCircleBodyDef.type = b2BodyType::b2_dynamicBody;
-    this->mCircleBodyDef.position.Set(20.0f, 45.0f);
-    
+    this->mCircleBodyDef0.type = b2BodyType::b2_dynamicBody;
+    this->mCircleBodyDef0.position.Set(20.0f, 45.0f);
+    this->mCircleBodyDef1.type = b2BodyType::b2_dynamicBody;
+    this->mCircleBodyDef1.position.Set(-20.0f, 45.0f);
+
     this->mCircleShape.m_radius = 1.0f;
-    this->mCircleFixtureDef.shape = &this->mCircleShape;
-    this->mCircleFixtureDef.density = 1.0f;
-    this->mCircleFixtureDef.friction = 0.3f;
+
+    this->mCircleFixtureDef0.shape = &this->mCircleShape;
+    this->mCircleFixtureDef0.density = 0.05f;
+    this->mCircleFixtureDef0.friction = 0.3f;
+    this->mCircleFixtureDef0.restitution = 0.5f;
+
+    this->mCircleFixtureDef1.shape = &this->mCircleShape;
+    this->mCircleFixtureDef1.density = 1.0f;
+    this->mCircleFixtureDef1.friction = 0.3f;
+    this->mCircleFixtureDef1.restitution = 0.1f;
 }
 
 void CGame::FinalizeBox2D()
@@ -381,8 +394,10 @@ void CGame::Update()
 
     if (this->mGenerateCircleCounter > this->mGenerateCircleCounterThreshold) {
         this->mGenerateCircleCounter = 0;
-        b2Body* pCircleBody = this->mWorld->CreateBody(&this->mCircleBodyDef);
-        pCircleBody->CreateFixture(&this->mCircleFixtureDef);
+        b2Body* pCircleBody = this->mWorld->CreateBody(&this->mCircleBodyDef0);
+        pCircleBody->CreateFixture(&this->mCircleFixtureDef0);
+        pCircleBody = this->mWorld->CreateBody(&this->mCircleBodyDef1);
+        pCircleBody->CreateFixture(&this->mCircleFixtureDef1);
     }
 
     // 斜面0の角度の調節
